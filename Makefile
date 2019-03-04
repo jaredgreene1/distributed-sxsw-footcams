@@ -1,5 +1,6 @@
 deploy:
-	sudo balena push 192.168.0.25
+	cd frontend; npm run build
+	git push balena master 
 
 
 ssh:

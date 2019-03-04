@@ -1,6 +1,6 @@
 import picamera
 
-from flask import Flask
+import flask
 
 
 IMAGE_DIR = '/usr/src/app/frontend/public/'
@@ -20,7 +20,7 @@ def take_picture(name):
 ##################################
 # Flask Server
 ##################################
-app = Flask(__name__)
+app = flask.Flask(__name__)
 @app.route('/')
 def hello_world():
     return 'Hello Pooja Patel!'
@@ -39,7 +39,7 @@ def take_pic():
 
 @app.route('/get_picture')
 def get_picture():
-    return app.send_from_directory(IMAGE_DIR, last_photo)
+    return flask.send_from_directory(IMAGE_DIR, last_photo)
 
 
 app.run(host='0.0.0.0', port=8080)

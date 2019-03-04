@@ -15,7 +15,7 @@ WORKDIR /usr/src/app/backend
 RUN pip3 install -r /usr/src/app/backend/requirements.txt
 
 COPY ./frontend/package.json /usr/src/app/frontend/package.json
-#COPY ./frontend/package-lock.json /usr/src/app/frontend/package-lock.json
+COPY ./frontend/package-lock.json /usr/src/app/frontend/package-lock.json
 WORKDIR /usr/src/app/frontend
 RUN npm i 
 
