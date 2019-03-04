@@ -2,9 +2,18 @@ import picamera
 
 from flask import Flask
 
+
+IMAGE_DIR = '/usr/src/app/frontend/public/'
+
+last_photo = ''
+
 def take_picture(name):
+    global last_photo
+
     with picamera.PiCamera() as camera:
-        camera.capture('/usr/src/app/frontend/public/' + name + '.jpg')
+        camera.capture(IMAGE_DIR + name)
+
+    last_photo = name
     print('picture taken')
 
 
@@ -19,8 +28,30 @@ def hello_world():
 
 @app.route('/picture')
 def take_pic():
-    take_picture('image')
+    import time
+
+    ts = time.gmtime()
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S", ts)
+    file_name = timestamp + '.jpg'
+    take_picture(file_name)
     return 'Take a Picture!'
 
 
+@app.route('/get_picture')
+def get_picture():
+    return app.send_from_directory(IMAGE_DIR, last_photo)
+
+
 app.run(host='0.0.0.0', port=8080)
+
+
+
+
+
+
+
+
+
+
+
+
