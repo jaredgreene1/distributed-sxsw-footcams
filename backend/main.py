@@ -1,6 +1,6 @@
 import picamera
-
 import flask
+import os
 
 
 IMAGE_DIR = '/usr/src/app/frontend/public/'
@@ -11,6 +11,10 @@ def take_picture(name):
     global last_photo
 
     with picamera.PiCamera() as camera:
+        if os.environ['FLIP_IMAGE'] == 'TRUE':
+            camera.vflip = True
+        else:
+            camera.vflip = False 
         camera.capture(IMAGE_DIR + name)
 
     last_photo = name
