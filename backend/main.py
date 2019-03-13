@@ -8,18 +8,18 @@ IMAGE_DIR = '/usr/src/app/frontend/public/'
 
 last_photo = ''
 
+camera = picamera.PiCamera()
 
 # Should save foot pictures categorized by order number
 # and by view so that they're easy to sift through for data purposes
 def take_picture(name):
     global last_photo
 
-    with picamera.PiCamera() as camera:
-        if os.environ['FLIP_IMAGE'] == 'TRUE':
-            camera.vflip = True
-        else:
-            camera.vflip = False 
-        camera.capture(IMAGE_DIR + name)
+    if os.environ['FLIP_IMAGE'] == 'TRUE':
+        camera.vflip = True
+    else:
+        camera.vflip = False 
+    camera.capture(IMAGE_DIR + name)
 
     last_photo = name
     print('picture taken')
@@ -44,7 +44,7 @@ def take_pic():
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S", ts)
     file_name = timestamp + '.jpg'
     take_picture(file_name)
-    return 'Take a Picture!'
+    return flask.send_from_directory(IMAGE_DIR, last_photo)
 
 
 @app.route('/get_picture')
