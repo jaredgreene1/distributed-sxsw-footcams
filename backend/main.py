@@ -2,11 +2,15 @@ import picamera
 import flask
 import os
 
+from flask_cors import CORS
 
 IMAGE_DIR = '/usr/src/app/frontend/public/'
 
 last_photo = ''
 
+
+# Should save foot pictures categorized by order number
+# and by view so that they're easy to sift through for data purposes
 def take_picture(name):
     global last_photo
 
@@ -25,6 +29,8 @@ def take_picture(name):
 # Flask Server
 ##################################
 app = flask.Flask(__name__)
+CORS(app)
+
 @app.route('/')
 def hello_world():
     return 'Hello Pooja Patel!'
