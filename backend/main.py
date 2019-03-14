@@ -19,7 +19,7 @@ def take_picture(name):
         camera.vflip = True
     else:
         camera.vflip = False 
-    camera.capture(IMAGE_DIR + name)
+    camera.capture(IMAGE_DIR + name, format='jpeg')
 
     last_photo = name
     print('picture taken')
