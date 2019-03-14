@@ -15,8 +15,6 @@ export const Breadcrumbs = (props) => {
   }
 
   function bcStyle(numb) {
-    console.log("step numb: " + stepNumber)
-    console.log("numb: " + numb)
     return(
       {
         color: numb > stepNumber ? 'black' : 'blue', 

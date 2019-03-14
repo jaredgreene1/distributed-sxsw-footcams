@@ -3,6 +3,7 @@ import { CamerasController } from './CamerasController.jsx';
 import { Breadcrumbs } from './Breadcrumbs.jsx';
 import CustomerForm from './CustomerForm.jsx';
 import { ReviewScreen } from './ReviewScreen.jsx';
+import { createAlbum, addPhoto, addCSV } from '../awsFuncs.js';
 
 
 const homepageStyle = {
@@ -26,9 +27,9 @@ const cameraPanelStyle = {
 }
 
 const cameras = { 
-  'Left': 'http://4946130849b4be9be47893b9456ffcb5.balena-devices.com:8080',
-  'Right': 'http://58c1f48af4b9555f433c17a5be6b954f.balena-devices.com:8080',
-  'Top': 'http://192.168.0.36:8080'
+  'Top': 'http://4946130849b4be9be47893b9456ffcb5.balena-devices.com:8080',
+  'Left': 'http://58c1f48af4b9555f433c17a5be6b954f.balena-devices.com:8080',
+  'Right': 'http://f0a852e9a3316a4e14e38808440a0344.balena-devices.com:8080'
 
 }
 
@@ -51,7 +52,6 @@ const Header = props => {
 }
 
 
-
 export default class Homepage extends React.Component {
   constructor(props) {
     super(props);
@@ -59,8 +59,32 @@ export default class Homepage extends React.Component {
       customerSignedUp: false,
       stepNumber: 0,
       customerInfo: {},
+      images:{}
     }
   }
+
+  uploadCustomerData = () => {
+    const dirName = this.state.customerInfo.firstName + 
+      this.state.customerInfo.lastName + 
+      this.state.customerInfo.orderNumber
+     Object.keys(this.state.images).map( key =>
+       addPhoto(this.state.images[key], key, dirName)
+     )
+
+    
+    var customerData = '' 
+    Object.keys(this.state.customerInfo).map( key =>
+      customerData += (key + ', '))
+
+    customerData += '\n'
+    Object.values(this.state.customerInfo).map( value =>
+      customerData += (value + ', '))
+    
+    addCSV(customerData, dirName)
+
+  }
+
+  
 
   signUpCustomer = customerInfo => {
     this.setState({
@@ -82,23 +106,28 @@ export default class Homepage extends React.Component {
     })
   }
 
+  setImage = (imageName, image) => {
+    this.state.images[imageName] = image
+    this.setState({images: this.state.images})
+  }
+
   LeftFootController = () => 
     <CamerasController 
       cameras={{
         'Top': {
           'uri': cameras.Top, 
-          'image': this.state.leftTopImage,
-          'updateImage': (image) => this.setState({'leftTopImage': image})
+          'image': this.state.images.leftTopImage,
+          'updateImage': (image) => this.setImage('leftTopImage', image)
         },
         'Outside': { 
           'uri': cameras.Left, 
-          'image': this.state.leftOutsideImage,
-          'updateImage': (image) => this.setState({'leftOutsideImage': image})
+          'image': this.state.images.leftOutsideImage,
+          'updateImage': (image) => this.setImage('leftOutsideImage', image)
         },
         'Inside' : {
           'uri': cameras.Right, 
-          'image': this.state.leftInsideImage,
-          'updateImage': (image) => this.setState({'leftInsideImage': image})
+          'image': this.state.images.leftInsideImage,
+          'updateImage': (image) => this.setImage('leftInsideImage', image)
         }
       }}
       next={this.nextStep}
@@ -111,18 +140,18 @@ export default class Homepage extends React.Component {
       cameras={{
         'Top': {
           'uri': cameras.Top, 
-          'image': this.state.rightTopImage,
-          'updateImage': (image) => this.setState({'rightTopImage': image})
+          'image': this.state.images.rightTopImage,
+          'updateImage': (image) => this.setImage('rightTopImage', image)
         },
         'Outside': { 
           'uri': cameras.Right, 
-          'image': this.state.rightOutsideImage,
-          'updateImage': (image) => this.setState({'rightOutsideImage': image})
+          'image': this.state.images.rightOutsideImage,
+          'updateImage': (image) => this.setImage('rightOutsideImage', image)
         },
         'Inside' : {
           'uri': cameras.Left, 
-          'image': this.state.rightInsideImage,
-          'updateImage': (image) => this.setState({'rightInsideImage': image})
+          'image': this.state.images.rightInsideImage,
+          'updateImage': (image) => this.setImage('rightInsideImage', image)
         }
       }}
       next={this.nextStep}
@@ -133,13 +162,24 @@ export default class Homepage extends React.Component {
 
   ScreenForStep = stepNumber => {
     if(stepNumber == 0)
-      return(<CustomerForm signUpCustomer= {this.signUpCustomer}/>)
+      return(
+        <CustomerForm 
+          signUpCustomer= {this.signUpCustomer}
+          customerInfo = {this.state.customerInfo}
+        />)
     else if(stepNumber == 1)
       return(this.LeftFootController())
     else if(stepNumber == 2)
       return(this.RightFootController())
     else
-     return(<ReviewScreen />)
+     return(
+       <ReviewScreen 
+          customerInfo={this.state.customerInfo} 
+          leftFootImages={ [] }
+          rightFootImages={ [] }
+          back={ this.prevStep }
+          upload={ this.uploadCustomerData }
+       />)
 }
 
   render() {

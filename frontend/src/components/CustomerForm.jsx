@@ -34,12 +34,12 @@ export default class CustomerForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      orderNumb: '',
-      address: '',
-      notes: '',
+      firstName: this.props.customerInfo['firstName'] || '',
+      lastName: this.props.customerInfo['lastName'] || '',
+      email: this.props.customerInfo['email'] || '',
+      orderNumber: this.props.customerInfo['orderNumber'] || '',
+      address: this.props.customerInfo['address'] || '',
+      notes: this.props.customerInfo['notes'] || '',
     };
   }
 
@@ -47,7 +47,7 @@ export default class CustomerForm extends React.Component {
   changeLastName = event => this.setState({lastName: event.target.value});
   changeAddress = event => this.setState({address: event.target.value});
   changeEmail = event => this.setState({email: event.target.value});
-  changeOrderNumb = event => this.setState({orderNumb: event.target.value});
+  changeOrderNumb = event => this.setState({orderNumber: event.target.value});
   changeNotes = event => this.setState({notes: event.target.value});
 
   handleSubmit = event => {
@@ -56,7 +56,7 @@ export default class CustomerForm extends React.Component {
         firstName: this.state.firstName,
         lastName: this.state.lastName,
         email: this.state.email,
-        orderNumb: this.state.orderNumb,
+        orderNumber: this.state.orderNumber,
         address: this.state.address,
         notes: this.state.notes
       }
@@ -101,7 +101,7 @@ export default class CustomerForm extends React.Component {
             <label style={fieldStyle}>
               Order Number: 
               <input type="text" 
-                value={this.state.orderNumb} 
+                value={this.state.orderNumber} 
                 onChange={this.changeOrderNumb} 
                 style={inputStyle}
               />
